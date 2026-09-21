@@ -1,0 +1,124 @@
+<Window x:Class="SystemAudioRecorder.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="System Audio Recorder 1.0.4" Width="640" Height="880" MinWidth="560" MinHeight="660"
+        Background="#101722" Foreground="#F0F4FA" FontFamily="Segoe UI"
+        WindowStartupLocation="CenterScreen" Closing="Window_Closing">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="17,11"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Background" Value="#DCE7F4"/>
+            <Setter Property="Foreground" Value="#101722"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Padding" Value="9"/>
+            <Setter Property="Foreground" Value="#101722"/>
+            <Setter Property="Background" Value="#F0F4FA"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        </Style>
+        <Style x:Key="TimerNumber" TargetType="TextBox">
+            <Setter Property="Width" Value="38"/>
+            <Setter Property="Padding" Value="5,4"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="MaxLength" Value="2"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="#101722"/>
+            <Setter Property="Background" Value="#F0F4FA"/>
+        </Style>
+    </Window.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="28">
+            <TextBlock Text="SYSTEM AUDIO" FontSize="12" FontWeight="Bold" Foreground="#71D8CC"/>
+            <TextBlock Text="Record what you hear." FontSize="28" FontWeight="SemiBold" Margin="0,6,0,20"/>
+            <TextBlock Text="PLAYBACK DEVICE" FontSize="11" Foreground="#AEBED2" Margin="0,0,0,7"/>
+            <DockPanel>
+                <Button x:Name="RefreshButton" DockPanel.Dock="Right" Content="Refresh" Click="Refresh_Click"
+                        Margin="10,0,0,0" AutomationProperties.Name="Refresh playback devices"/>
+                <ComboBox x:Name="Devices" DisplayMemberPath="DisplayName" VerticalContentAlignment="Center"
+                          SelectionChanged="Devices_SelectionChanged"
+                          AutomationProperties.Name="Playback device"/>
+            </DockPanel>
+            <TextBlock Text="One output device. All apps playing through it. No microphone."
+                       FontSize="12" Foreground="#AEBED2" Margin="0,8,0,12" TextWrapping="Wrap"/>
+            <WrapPanel VerticalAlignment="Center">
+                <CheckBox x:Name="StopAfterEnabled" Content="Stop after" Foreground="#F0F4FA"
+                          VerticalAlignment="Center" Margin="0,0,12,0"
+                          Checked="StopAfter_Changed" Unchecked="StopAfter_Changed"
+                          AutomationProperties.Name="Enable automatic stop timer"/>
+                <TextBox x:Name="StopAfterHours" Text="00" Style="{StaticResource TimerNumber}" IsEnabled="False"
+                         TextChanged="StopAfter_Changed" AutomationProperties.Name="Stop after hours"/>
+                <TextBlock Text="h" Margin="4,0,8,0" VerticalAlignment="Center"/>
+                <TextBox x:Name="StopAfterMinutes" Text="30" Style="{StaticResource TimerNumber}" IsEnabled="False"
+                         TextChanged="StopAfter_Changed" AutomationProperties.Name="Stop after minutes"/>
+                <TextBlock Text="m" Margin="4,0,8,0" VerticalAlignment="Center"/>
+                <TextBox x:Name="StopAfterSeconds" Text="00" Style="{StaticResource TimerNumber}" IsEnabled="False"
+                         TextChanged="StopAfter_Changed" AutomationProperties.Name="Stop after seconds"/>
+                <TextBlock Text="s" Margin="4,0,0,0" VerticalAlignment="Center"/>
+            </WrapPanel>
+            <TextBlock Text="Elapsed clock time, including pauses. Range: 1 second to 24 hours."
+                       FontSize="11" Foreground="#AEBED2" Margin="0,6,0,0" TextWrapping="Wrap"/>
+            <TextBlock x:Name="StopAfterError" Foreground="#F4C57B" FontSize="11" TextWrapping="Wrap"
+                       Visibility="Collapsed" Margin="0,5,0,0" AutomationProperties.LiveSetting="Polite"/>
+            <TextBlock x:Name="CountdownLabel" Text="Auto stop off" Foreground="#71D8CC" FontSize="12"
+                       Margin="0,8,0,12" AutomationProperties.Name="Remaining elapsed time before automatic stop"/>
+            <Border Background="#1A2636" CornerRadius="12" Padding="20">
+                <StackPanel>
+                    <DockPanel>
+                        <TextBlock x:Name="StateLabel" Text="READY" FontWeight="Bold" FontSize="11"
+                                   Foreground="#71D8CC" VerticalAlignment="Center"/>
+                        <StackPanel HorizontalAlignment="Right">
+                            <TextBlock Text="RECORDED AUDIO" FontSize="9" Foreground="#AEBED2" HorizontalAlignment="Right"/>
+                            <TextBlock x:Name="DurationLabel" Text="00:00:00" FontSize="34"
+                                       FontFamily="Consolas" HorizontalAlignment="Right"/>
+                        </StackPanel>
+                    </DockPanel>
+                    <Grid Margin="0,16,0,0">
+                        <Canvas x:Name="WaveCanvas" Height="60" ClipToBounds="True"
+                                SizeChanged="WaveCanvas_SizeChanged" AutomationProperties.Name="Live audio level history">
+                            <Polyline x:Name="WaveLine" Stroke="#71D8CC" StrokeThickness="2"/>
+                        </Canvas>
+                        <TextBlock Text="LIVE LEVEL" FontSize="9" Foreground="#AEBED2" VerticalAlignment="Bottom"
+                                   HorizontalAlignment="Right"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+            <WrapPanel Margin="0,20,0,0">
+                <Button x:Name="RecordButton" Content="_Start Recording" Click="Record_Click" Background="#71D8CC"/>
+                <Button x:Name="PauseButton" Content="_Pause" Click="Pause_Click" IsEnabled="False"/>
+                <Button x:Name="StopButton" Content="_Stop &amp; Save" Click="Stop_Click" IsEnabled="False" Margin="0"/>
+            </WrapPanel>
+            <TextBlock x:Name="StatusLabel" Text="Ready to record." TextWrapping="Wrap" Foreground="#B9C9DD"
+                       Margin="0,14,0,14" MinHeight="36" AutomationProperties.LiveSetting="Polite"/>
+            <TextBlock x:Name="CaptureWarning" TextWrapping="Wrap" Foreground="#F4C57B" FontSize="11"
+                       Margin="0,0,0,10" Visibility="Collapsed"/>
+            <Border BorderBrush="#304157" BorderThickness="1" CornerRadius="8" Padding="14">
+                <StackPanel>
+                    <TextBlock Text="UNSAVED RECORDINGS" FontSize="11" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <ComboBox x:Name="Recoveries" DisplayMemberPath="DisplayName"
+                              SelectionChanged="Recoveries_SelectionChanged" AutomationProperties.Name="Unsaved recordings"/>
+                    <WrapPanel Margin="0,10,0,0">
+                        <Button x:Name="SaveButton" Content="Save _MP3..." Click="Save_Click" IsEnabled="False"/>
+                        <Button x:Name="DiscardButton" Content="_Discard..." Click="Discard_Click" IsEnabled="False"/>
+                        <Button x:Name="CancelExportButton" Content="Cancel export" Click="CancelExport_Click" Visibility="Collapsed"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+            <TextBlock Text="Use headphones for a quiet room. Muted-output capture depends on the device. Protected (DRM) audio may not be captured."
+                       TextWrapping="Wrap" Foreground="#93A8C0" FontSize="11" Margin="0,16,0,0"/>
+            <DockPanel Margin="0,16,0,0">
+                <Button Content="Open _Logs Folder" DockPanel.Dock="Right" Click="OpenLogs_Click"
+                        Margin="12,0,0,0" VerticalAlignment="Top" AutomationProperties.Name="Open local diagnostics logs folder"/>
+                <StackPanel>
+                    <TextBlock x:Name="DiagnosticsStatus" Text="Starting local diagnostics..." TextWrapping="Wrap"
+                               FontSize="11" Foreground="#93A8C0" AutomationProperties.LiveSetting="Polite"/>
+                    <TextBlock x:Name="DiagnosticsNotice" TextWrapping="Wrap" FontSize="11" Foreground="#F4C57B"
+                               Margin="0,4,0,0"/>
+                </StackPanel>
+            </DockPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

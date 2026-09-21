@@ -1,0 +1,64 @@
+Third-party software notices
+============================
+
+The repository's LICENSE covers original System Audio Recorder code.
+Dependencies and operating-system components retain their own licenses.
+The project does not relicense them.
+
+NAudio.Wasapi (direct) and NAudio.Core (transitive), version 2.2.1
+https://github.com/naudio/NAudio
+MIT license
+
+Both restored NuGet manifests declare MIT.
+Package attribution: Copyright (c) 2023 Mark Heath.
+The license below is from the upstream v2.2.1 tag:
+https://github.com/naudio/NAudio/blob/v2.2.1/license.txt
+
+Copyright 2020 Mark Heath
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to
+do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+MP3 encoding uses Microsoft Windows Media Foundation components already
+provided by the operating system. No third-party native MP3 encoder is bundled.
+
+Self-contained releases include the Microsoft .NET runtime and Windows Desktop
+runtime, subject to the accompanying Microsoft.NETCore.App-* and
+Microsoft.WindowsDesktop.App-* license/notice files copied by publish.ps1.
+Their top-level licenses are MIT, Copyright (c) .NET Foundation and Contributors.
+Runtime third-party components have additional notices and license terms:
+retain the complete runtime-pack notices, not just this summary. The exact
+runtime versions are recorded in SystemAudioRecorder.runtimeconfig.json.
+
+Development-only dependencies are restored from NuGet, not vendored in source
+and not shipped in the portable application:
+- Microsoft.NET.Test.Sdk, Microsoft.CodeCoverage, Microsoft.TestPlatform.TestHost,
+  and Microsoft.TestPlatform.ObjectModel 17.14.1: MIT (package metadata).
+- Newtonsoft.Json 13.0.3: MIT (package metadata and LICENSE.md).
+- xunit 2.9.3, xunit.assert/core/extensibility.core/extensibility.execution 2.9.3,
+  xunit.analyzers 1.18.0, and xunit.runner.visualstudio 3.1.4:
+  Apache-2.0 (package metadata).
+- xunit.abstractions 2.0.3 declares a legacy license URL in its NuGet manifest,
+  pointing to the xUnit.net Apache-2.0 license and notices:
+  https://raw.githubusercontent.com/xunit/xunit/master/license.txt
+  Retain those notices (including any MIT-covered embedded code) if separately
+  redistributing test tooling.
+
+If you redistribute test/build tooling separately, retain its upstream licenses
+and any embedded third-party notices; the portable app notices are not a license
+bundle for development tools.
